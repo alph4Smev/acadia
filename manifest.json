@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Acadia",
+  "version": "2.0.0",
+  "description": "AI study companion for Cisco Networking Academy. Explains quiz questions with reasoning and confidence scores. BYO LLM key (Gemini, Groq, OpenRouter, or Ollama).",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:11434/*",
+    "http://localhost:11434/*",
+    "https://api.groq.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://openrouter.ai/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.netacad.com/*"
+      ],
+      "js": [
+        "api.js",
+        "ui.js",
+        "scraper.js",
+        "content.js"
+      ],
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "images/icon-48x48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "acadia@study.local",
+      "strict_min_version": "115.0"
+    }
+  },
+  "commands": {
+    "process-page-command": {
+      "suggested_key": {
+        "default": "Alt+Shift+Q",
+        "mac": "Alt+Shift+Q"
+      },
+      "description": "Analyze the current quiz question"
+    }
+  },
+  "icons": {
+    "48": "images/icon-48x48.png"
+  }
+}
