@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Acadia</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #0f172a;
+      --bg-elev: #1e293b;
+      --border: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.28);
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --text-faint: #64748b;
+      --accent: #22d3ee;
+      --accent-dim: rgba(34, 211, 238, 0.18);
+      --accent-glow: rgba(34, 211, 238, 0.35);
+      --success: #34d399;
+      --danger: #f87171;
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 360px;
+      margin: 0;
+      padding: 14px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Inter", sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+    .brand-name {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .brand-version {
+      margin-left: auto;
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.05em;
+    }
+    .label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+    .label:first-of-type, .section .label:first-child { margin-top: 0; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 9px 11px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 12.5px;
+      font-family: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-elev);
+    }
+    input::placeholder { color: var(--text-faint); }
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 11.5px;
+    }
+    .provider-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 3px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      margin-bottom: 12px;
+    }
+    .provider-tab {
+      padding: 7px 4px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-dim);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .provider-tab:hover { color: var(--text); }
+    .provider-tab.is-active {
+      background: var(--bg-elev);
+      color: var(--accent);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .section {
+      padding: 12px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .section.is-hidden { display: none; }
+    .hint {
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+    .hint a, .hint code {
+      color: var(--text-dim);
+      background: var(--bg-elev);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 10.5px;
+      text-decoration: none;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+    }
+    .toggle-row + .toggle-row { border-top: 1px solid var(--border); }
+    .toggle-label {
+      flex: 1;
+      font-size: 12.5px;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .toggle-label small {
+      display: block;
+      color: var(--text-faint);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: rgba(71, 85, 105, 0.6);
+      border-radius: 999px;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 3px;
+      bottom: 3px;
+      background: #cbd5e1;
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle input:checked + .toggle-slider {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(14px);
+      background: #0f172a;
+    }
+    .btn {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elev);
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: rgba(51, 65, 85, 0.9); border-color: rgba(148, 163, 184, 0.45); }
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(8, 145, 178, 0.6) 0%, rgba(6, 182, 212, 0.6) 100%);
+      border-color: rgba(34, 211, 238, 0.5);
+      color: #ecfeff;
+    }
+    .btn.primary:hover {
+      background: linear-gradient(135deg, rgba(8, 145, 178, 0.85) 0%, rgba(6, 182, 212, 0.85) 100%);
+    }
+    .btn-row { display: flex; gap: 8px; margin-top: 14px; }
+    #status {
+      margin-top: 12px;
+      min-height: 16px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    #status.is-success { color: var(--success); }
+    #status.is-error { color: var(--danger); }
+    .footer {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 10.5px;
+      color: var(--text-faint);
+      line-height: 1.55;
+      text-align: center;
+    }
+    .footer kbd {
+      background: var(--bg-elev);
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 10px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Acadia</span>
+    <span class="brand-version">v2.0.0</span>
+  </div>
+
+  <label class="label">Provider</label>
+  <div class="provider-tabs" id="providerTabs">
+    <button class="provider-tab" data-provider="gemini">Gemini</button>
+    <button class="provider-tab" data-provider="groq">Groq</button>
+    <button class="provider-tab" data-provider="openrouter">OpenRouter</button>
+    <button class="provider-tab" data-provider="ollama">Ollama</button>
+  </div>
+  <select id="providerSelect" style="display:none;">
+    <option value="gemini">Gemini</option>
+    <option value="groq">Groq</option>
+    <option value="openrouter">OpenRouter</option>
+    <option value="ollama">Ollama</option>
+  </select>
+
+  <div id="geminiSection" class="section">
+    <label class="label" for="geminiApiKey">API key</label>
+    <input type="password" id="geminiApiKey" placeholder="AIza…">
+    <label class="label" for="geminiModel">Model</label>
+    <input type="text" id="geminiModel" placeholder="gemini-2.0-flash">
+    <div class="hint">Free key: <code>aistudio.google.com/apikey</code>. <code>gemini-2.0-flash</code> = 15 RPM / 1500 RPD free. <code>gemini-2.5-flash</code> is smarter but only 5 RPM.</div>
+  </div>
+
+  <div id="groqSection" class="section">
+    <label class="label" for="groqApiKey">API key</label>
+    <input type="password" id="groqApiKey" placeholder="gsk_…">
+    <label class="label" for="groqModel">Model</label>
+    <input type="text" id="groqModel" placeholder="openai/gpt-oss-120b">
+    <label class="label" for="groqUrl">Endpoint</label>
+    <input type="text" id="groqUrl" placeholder="https://api.groq.com/openai/v1/chat/completions">
+    <div class="hint">Free key: <code>console.groq.com/keys</code> — fast but rate-limited.</div>
+  </div>
+
+  <div id="openrouterSection" class="section">
+    <label class="label" for="openrouterApiKey">API key</label>
+    <input type="password" id="openrouterApiKey" placeholder="sk-or-v1-…">
+    <label class="label" for="openrouterModel">Model</label>
+    <input type="text" id="openrouterModel" placeholder="meta-llama/llama-3.3-70b-instruct:free">
+    <div class="hint">Free key: <code>openrouter.ai/keys</code>. Browse current free models at <code>openrouter.ai/models?max_price=0</code> — IDs rotate, so copy exactly.</div>
+  </div>
+
+  <div id="ollamaSection" class="section">
+    <label class="label" for="ollamaUrl">Endpoint</label>
+    <input type="text" id="ollamaUrl" placeholder="http://127.0.0.1:11434/api/generate">
+    <label class="label" for="ollamaModel">Model</label>
+    <input type="text" id="ollamaModel" placeholder="qwen3:8b">
+    <div class="hint">Local model — runs on your machine, zero token cost.</div>
+  </div>
+
+  <div class="section">
+    <div class="toggle-row">
+      <label class="toggle-label" for="showAnswersToggle">
+        Show answer panel
+        <small>Floating panel with hints on each quiz page</small>
+      </label>
+      <label class="toggle"><input type="checkbox" id="showAnswersToggle" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label" for="autoGenerateToggle">
+        Auto-generate on quiz open
+        <small>Run the model the moment a question loads</small>
+      </label>
+      <label class="toggle"><input type="checkbox" id="autoGenerateToggle" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label" for="processOnSwitchToggle">
+        Refresh on page switch
+        <small>Re-run when navigating between questions</small>
+      </label>
+      <label class="toggle"><input type="checkbox" id="processOnSwitchToggle" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label" for="accuracyModeToggle">
+        Accuracy mode
+        <small>Two-pass verification — slower, more reliable</small>
+      </label>
+      <label class="toggle"><input type="checkbox" id="accuracyModeToggle"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle-label" for="diagnosticModeToggle">
+        Diagnostic panel
+        <small>Show raw scrape data in the floating UI</small>
+      </label>
+      <label class="toggle"><input type="checkbox" id="diagnosticModeToggle"><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <label class="label" for="lessonContext">Lesson notes (optional)</label>
+    <textarea id="lessonContext" placeholder="Paste lesson text or notes here — authoritative over model memory."></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn primary" id="saveKey">Save</button>
+    <button class="btn" id="processPage">Generate now</button>
+  </div>
+
+  <div id="status"></div>
+
+  <div class="footer">
+    Shortcut <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Q</kbd>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
